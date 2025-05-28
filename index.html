@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leadership Empathy Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2c3e50;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #7fcdcd, #a8e6cf);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #7fcdcd;
+            font-size: 14px;
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header p {
+            color: white;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .quiz-content {
+            padding: 40px;
+        }
+        
+        .question-container {
+            display: none;
+        }
+        
+        .question-container.active {
+            display: block;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+        }
+        
+        .question h3 {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .answer {
+            padding: 20px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+        
+        .answer:hover {
+            background: #e8f5e8;
+            border-color: #a8e6cf;
+        }
+        
+        .answer.selected {
+            background: #7fcdcd;
+            color: white;
+            border-color: #5fb3b3;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: #7fcdcd;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #5fb3b3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #ecf0f1;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7fcdcd, #a8e6cf);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 20%;
+        }
+        
+        .results {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .results h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .results p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+        
+        .contact-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .contact-btn {
+            background: linear-gradient(135deg, #7fcdcd, #a8e6cf);
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(127, 205, 205, 0.3);
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .quiz-content {
+                padding: 20px;
+            }
+            
+            .logo {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Empathic Minds</div>
+            <h1>Leadership Empathy Assessment</h1>
+            <p>Discover your empathic leadership strengths and growth areas</p>
+        </div>
+        
+        <div class="quiz-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <!-- Question 1 -->
+            <div class="question-container active" id="question1">
+                <div class="question">
+                    <h3>During a team meeting, you notice one of your usually engaged team members is unusually quiet and seems distracted. Their body language suggests they're upset about something. What's your most likely response?</h3>
+                    <div class="answers">
+                        <div class="answer" data-value="1">Continue with the meeting as planned - they're probably just having an off day and will sort it out themselves</div>
+                        <div class="answer" data-value="2">Make a mental note to send them a quick email later asking if everything is okay</div>
+                        <div class="answer" data-value="3">After the meeting, approach them privately to check in and offer support if needed</div>
+                        <div class="answer" data-value="4">Pause the meeting briefly to ask if they're okay and if there's anything the team should know about</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question-container" id="question2">
+                <div class="question">
+                    <h3>You've just delivered critical feedback to a team member about a project mistake that cost the company money. They react defensively, saying "I always get blamed for everything around here" and their eyes well up with tears. How do you respond?</h3>
+                    <div class="answers">
+                        <div class="answer" data-value="1">Stick to the facts about the mistake and remind them this is about performance, not personal attacks</div>
+                        <div class="answer" data-value="2">Acknowledge their emotional response but redirect the conversation back to the business impact</div>
+                        <div class="answer" data-value="3">Take a moment to validate their feelings, then explore what's behind their sense of being blamed</div>
+                        <div class="answer" data-value="4">Immediately apologize for making them feel attacked and focus on how to prevent future mistakes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question-container" id="question3">
+                <div class="question">
+                    <h3>Two of your high-performing team members have been increasingly tense with each other, making sarcastic comments in meetings and avoiding collaboration. Other team members are starting to notice and feel uncomfortable. What's your approach?</h3>
+                    <div class="answers">
+                        <div class="answer" data-value="1">Address it in the next team meeting by setting clear expectations about professional behavior</div>
+                        <div class="answer" data-value="2">Speak to each person individually to get their side of the story and give them direct feedback</div>
+                        <div class="answer" data-value="3">Meet with both together to facilitate a conversation about what's happening and how to resolve it</div>
+                        <div class="answer" data-value="4">First understand each person's perspective separately, then help them find common ground in a joint conversation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question-container" id="question4">
+                <div class="question">
+                    <h3>During a restructuring, you need to inform your team that some roles will be eliminated, though you don't yet know which ones. You can see the anxiety on their faces as rumors have been circulating. How do you handle this conversation?</h3>
+                    <div class="answers">
+                        <div class="answer" data-value="1">Provide the facts you know, explain the timeline, and focus on maintaining productivity during uncertainty</div>
+                        <div class="answer" data-value="2">Share what you can, address their concerns directly, and commit to updating them as soon as you know more</div>
+                        <div class="answer" data-value="3">Acknowledge how difficult this uncertainty must be for them and create space for them to express their concerns</div>
+                        <div class="answer" data-value="4">Validate their anxiety, share your own concerns about the situation, and collaborate on how to support each other through this period</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question-container" id="question5">
+                <div class="question">
+                    <h3>A typically reliable team member has been missing deadlines and seems overwhelmed. When you ask about it, they mention they're dealing with "some personal stuff" but don't elaborate. Their performance is affecting the whole team's ability to deliver. What do you do?</h3>
+                    <div class="answers">
+                        <div class="answer" data-value="1">Respect their privacy but make it clear that performance standards must be maintained regardless of personal issues</div>
+                        <div class="answer" data-value="2">Offer some flexibility in deadlines while asking them to communicate better about what support they need</div>
+                        <div class="answer" data-value="3">Gently inquire about what kind of support might help them manage both their personal situation and work responsibilities</div>
+                        <div class="answer" data-value="4">Share that you're there to support them, ask open-ended questions about their needs, and explore creative solutions together</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" style="display: none;">Previous</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next</button>
+            </div>
+            
+            <div class="results" id="results">
+                <div class="score-circle" id="scoreCircle">
+                    <span id="scoreText">0%</span>
+                </div>
+                <h2 id="resultTitle">Your Empathy Assessment</h2>
+                <p id="resultDescription"></p>
+                
+                <div class="contact-section">
+                    <h3>Ready to Enhance Your Leadership?</h3>
+                    <p>Psychologist, Dr Peter Sear works one-to-one with coaches and leaders.</p>
+                    <p>Develop deeper empathic leadership skills that transform team performance and create psychological safety.</p>
+                    <a href="mailto:peter@empathicminds.org" class="contact-btn">Contact Dr Peter Sear</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+        let answers = {};
+
+        function selectAnswer(element, questionNum, value) {
+            // Remove selected class from all answers in this question
+            const questionAnswers = document.querySelectorAll(`#question${questionNum} .answer`);
+            questionAnswers.forEach(answer => answer.classList.remove('selected'));
+            
+            // Add selected class to clicked answer
+            element.classList.add('selected');
+            
+            // Store the answer
+            answers[questionNum] = value;
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                // Hide current question
+                document.getElementById(`question${currentQuestion}`).classList.remove('active');
+                
+                // Show next question
+                currentQuestion++;
+                document.getElementById(`question${currentQuestion}`).classList.add('active');
+                
+                // Update progress bar
+                const progress = (currentQuestion / totalQuestions) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+                
+                // Update buttons
+                document.getElementById('prevBtn').style.display = 'inline-block';
+                document.getElementById('nextBtn').disabled = !answers[currentQuestion];
+                
+                if (currentQuestion === totalQuestions) {
+                    document.getElementById('nextBtn').textContent = 'See Results';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 1) {
+                // Hide current question
+                document.getElementById(`question${currentQuestion}`).classList.remove('active');
+                
+                // Show previous question
+                currentQuestion--;
+                document.getElementById(`question${currentQuestion}`).classList.add('active');
+                
+                // Update progress bar
+                const progress = (currentQuestion / totalQuestions) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+                
+                // Update buttons
+                if (currentQuestion === 1) {
+                    document.getElementById('prevBtn').style.display = 'none';
+                }
+                document.getElementById('nextBtn').disabled = false;
+                document.getElementById('nextBtn').textContent = 'Next';
+            }
+        }
+
+        function showResults() {
+            // Hide all question containers
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`question${i}`).style.display = 'none';
+            }
+            
+            // Hide navigation
+            document.querySelector('.navigation').style.display = 'none';
+            
+            // Hide progress bar
+            document.querySelector('.progress-bar').style.display = 'none';
+            
+            // Calculate score (4 points max per question, total 20 points)
+            const totalScore = Object.values(answers).reduce((sum, value) => sum + value, 0);
+            const percentage = Math.round((totalScore / 20) * 100);
+            
+            // Show results
+            const resultsDiv = document.getElementById('results');
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreText = document.getElementById('scoreText');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDescription = document.getElementById('resultDescription');
+            
+            scoreText.textContent = percentage + '%';
+            
+            // Set result based on score (made more challenging)
+            if (percentage >= 85) {
+                scoreCircle.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+                resultTitle.textContent = 'Highly Empathic Leader';
+                resultDescription.innerHTML = 'You demonstrate exceptional empathic leadership skills. You understand the subtle emotional dynamics in your team and respond with both sensitivity and effectiveness. Your approach builds trust and psychological safety.';
+            } else if (percentage >= 70) {
+                scoreCircle.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
+                resultTitle.textContent = 'Developing Empathic Awareness';
+                resultDescription.innerHTML = 'You show good empathic instincts but there\'s significant room for growth. Sometimes you may miss emotional cues or default to task-focused responses when people need emotional support. Developing these skills could transform your leadership impact.';
+            } else {
+                scoreCircle.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                resultTitle.textContent = 'Empathy Growth Opportunity';
+                resultDescription.innerHTML = 'Your current approach may be missing important emotional dynamics in your team. This could be impacting engagement, trust, and performance in ways you might not realize. The good news? Empathic leadership skills can be developed with the right guidance and practice.';
+            }
+            
+            resultsDiv.style.display = 'block';
+            resultsDiv.classList.add('show');
+        }
+
+        // Add event listeners for answer selection
+        document.addEventListener('DOMContentLoaded', function() {
+            for (let q = 1; q <= totalQuestions; q++) {
+                const answers = document.querySelectorAll(`#question${q} .answer`);
+                answers.forEach((answer, index) => {
+                    answer.addEventListener('click', function() {
+                        selectAnswer(this, q, parseInt(this.dataset.value));
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
